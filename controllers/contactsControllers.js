@@ -1,8 +1,5 @@
 import * as contactsService from "../services/contactsServices.js";
-
-import ctrlWrapper from "../decorators/ctrlWrapper.js";
-
-import { createContactSchema } from '../schemas/contactsSchemas.js';
+import { createContactSchema, updateContactSchema } from '../schemas/contactsSchemas.js';
 
 export const getAllContacts = async (req, res) => {
     const result = await contactsService.contactsList();
@@ -24,9 +21,8 @@ export const deleteContact = async (req, res) => {
     if (!deletedContact) {
         return res.status(404).json({ message: "Not found" });
     }
-    res.status(200).json(deletedContact);
+    res.json(deletedContact);
 };
-
 
 export const createContact = async (req, res) => {
     const { name, email, phone } = req.body;
@@ -60,12 +56,4 @@ export const updateContact = async (req, res) => {
     }
 
     res.json(result);
-};
-
-export default {
-    getAllContacts: ctrlWrapper(getAllContacts),
-    getOneContact: ctrlWrapper(getOneContact),
-    deleteContact: ctrlWrapper(deleteContact),
-    createContact: ctrlWrapper(createContact),
-    updateContact: ctrlWrapper(updateContact),
 };
