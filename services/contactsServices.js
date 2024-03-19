@@ -19,16 +19,14 @@ export async function getContactById(contactId) {
 }
 
 export async function removeContact(contactId) {
-    const dataForDelete = await contactsList();
-    const contactToDelete = dataForDelete.findIndex(
-        (item) => item.id === contactId
-    );
-    if (contactToDelete === -1) {
+    const contacts = await contactsList();
+    const index = contacts.findIndex((item) => item.id === contactId);
+    if (index === -1) {
         return null;
     }
-    const dataUpdated = dataForDelete.splice(contactToDelete, 1);
-    dataRewrite(dataForDelete);
-    return dataUpdated;
+    const deletedContact = contacts.splice(index, 1)[0];
+    dataRewrite(contacts);
+    return deletedContact;
 }
 
 export async function addContact(name, email, phone) {
