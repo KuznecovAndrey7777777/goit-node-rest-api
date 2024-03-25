@@ -1,6 +1,9 @@
 import * as contactsService from "../services/contactsServices.js";
 import { createContactSchema, updateContactSchema } from '../schemas/contactsSchemas.js';
 
+import HttpError from "../helpers/HttpError.js";
+import ctrlWrapper from "../decorators/ctrlWrapper.js";
+
 export const getAllContacts = async (req, res) => {
     const result = await contactsService.contactsList();
     res.json(result);
@@ -56,4 +59,23 @@ export const updateContact = async (req, res) => {
     }
 
     res.json(result);
+};
+
+export const updateFavorite = async (req, res) => {
+    const { id } = req.params;
+
+    const result = await contactsService.updateStatusContact(id, req.body);
+    if (!result) {
+        throw HttpError(404);
+    }
+    res.status(200).json(result);
+};
+
+export default {
+    getAllContacts: ctrlWrapper(getAllContacts),
+    getOneContact: ctrlWrapper(getOneContact),
+    deleteContact: ctrlWrapper(deleteContact),
+    createContact: ctrlWrapper(createContact),
+    updateContact: ctrlWrapper(updateContact),
+    updateFavorite: ctrlWrapper(updateFavorite),
 };
