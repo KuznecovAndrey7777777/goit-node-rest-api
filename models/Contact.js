@@ -19,7 +19,7 @@ const contactsSchema = new Schema(
             default: false,
         },
     },
-    { versionKey: false, timestamps: true }
+    { versionKey: false, timestamps: false }
 );
 
 contactsSchema.post("save", handleSaveError);
