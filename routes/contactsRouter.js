@@ -5,14 +5,10 @@ import {
   deleteContact,
   createContact,
   updateContact,
-  updateFavorite,
+  updateStatusContact,
 } from "../controllers/contactsControllers.js";
 import validateBody from "../decorators/validateBody.js";
-import {
-  createContactSchema,
-  favoriteSchema,
-  updateContactSchema,
-} from "../schemas/contactsSchemas.js";
+import { createContactSchema, updateContactSchema, updateStatusSchema } from "../schemas/contactsSchemas.js";
 
 import isValidId from "../middlewares/isValidId.js";
 
@@ -26,18 +22,8 @@ contactsRouter.delete("/:id", isValidId, deleteContact);
 
 contactsRouter.post("/", validateBody(createContactSchema), createContact);
 
-contactsRouter.put(
-  "/:id",
-  isValidId,
-  validateBody(updateContactSchema),
-  updateContact
-);
+contactsRouter.put("/:id", isValidId, validateBody(updateContactSchema), updateContact);
 
-contactsRouter.patch(
-  "/:id/favorite",
-  isValidId,
-  validateBody(favoriteSchema),
-  updateFavorite
-);
+contactsRouter.patch("/:id/favorite", isValidId, validateBody(updateStatusSchema), updateStatusContact);
 
 export default contactsRouter;
