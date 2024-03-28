@@ -1,5 +1,7 @@
 import * as contactsService from "../services/contactsServices.js";
+
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
+
 import HttpError from "../helpers/HttpError.js";
 
 export const getAllContacts = ctrlWrapper(async (req, res) => {

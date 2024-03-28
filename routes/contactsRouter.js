@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
   getAllContacts,
   getOneContact,
@@ -7,7 +8,9 @@ import {
   updateContact,
   updateStatusContact,
 } from "../controllers/contactsControllers.js";
+
 import validateBody from "../decorators/validateBody.js";
+
 import { createContactSchema, updateContactSchema, updateStatusSchema } from "../schemas/contactsSchemas.js";
 
 import isValidId from "../middlewares/isValidId.js";
