@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+
 import authServices from '../services/authServices.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import HttpError from '../helpers/HttpError.js';

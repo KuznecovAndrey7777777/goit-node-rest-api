@@ -1,4 +1,5 @@
 import express from 'express';
+
 import authControllers from '../controllers/authController.js';
 import { userSingupSinginSchema } from '../schemas/usersSchemas.js';
 import validateBody from '../decorators/validateBody.js';

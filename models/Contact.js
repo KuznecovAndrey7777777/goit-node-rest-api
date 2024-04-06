@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+
 import { emailRegexp } from '../constants/constants.js';
 import { handleSaveError, setUpdateSetting } from './hooks.js';
 

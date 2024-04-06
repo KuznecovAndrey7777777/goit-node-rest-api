@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+
 import HttpError from '../helpers/HttpError.js';
 import authServices from '../services/authServices.js';
 
