@@ -1,32 +1,24 @@
-import express from "express";
-
-import {
-  getAllContacts,
-  getOneContact,
-  deleteContact,
-  createContact,
-  updateContact,
-  updateStatusContact,
-} from "../controllers/contactsControllers.js";
-
-import validateBody from "../decorators/validateBody.js";
-
-import { createContactSchema, updateContactSchema, updateStatusSchema } from "../schemas/contactsSchemas.js";
-
-import isValidId from "../middlewares/isValidId.js";
+import express from 'express';
+import contactsControllers from '../controllers/contactsControllers.js';
+import { addContactSchema, updateContactSchema, updateContactStatusSchema } from '../schemas/contactsSchemas.js';
+import validateBody from '../decorators/validateBody.js';
+import isValidId from '../middlewares/isValidId.js';
+import authenticate from '../middlewares/authenticate.js';
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", getAllContacts);
+const ensureAuthenticated = authenticate;
+const validateContactBody = validateBody(addContactSchema);
+const validateUpdateContactBody = validateBody(updateContactSchema);
+const validateUpdateContactStatusBody = validateBody(updateContactStatusSchema);
 
-contactsRouter.get("/:id", isValidId, getOneContact);
+contactsRouter.use(ensureAuthenticated);
 
-contactsRouter.delete("/:id", isValidId, deleteContact);
-
-contactsRouter.post("/", validateBody(createContactSchema), createContact);
-
-contactsRouter.put("/:id", isValidId, validateBody(updateContactSchema), updateContact);
-
-contactsRouter.patch("/:id/favorite", isValidId, validateBody(updateStatusSchema), updateStatusContact);
+contactsRouter.get('/', contactsControllers.getAll);
+contactsRouter.post('/', validateContactBody, contactsControllers.addContact);
+contactsRouter.get('/:id', isValidId, contactsControllers.getById);
+contactsRouter.put('/:id', isValidId, validateUpdateContactBody, contactsControllers.updateContact);
+contactsRouter.delete('/:id', isValidId, contactsControllers.deleteContact);
+contactsRouter.patch('/:id/favorite', isValidId, validateUpdateContactStatusBody, contactsControllers.updateContactStatus);
 
 export default contactsRouter;

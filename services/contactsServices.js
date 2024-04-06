@@ -1,19 +1,39 @@
-import Contact from "../models/Contact.js";
+import Contact from '../models/Contact.js';
 
-export const getAllContacts = () => Contact.find();
+const listContacts = async (filter = {}, setting = {}) => {
+    return await Contact.find(filter, '-createdAt -updatedAt', setting).populate('owner', 'email subscription');
+};
 
-export function getContactById(contactId) {
-    return Contact.findById(contactId);
-}
+const countContacts = async (filter) => {
+    return await Contact.countDocuments(filter);
+};
 
-export function removeContact(contactId) {
-    return Contact.findByIdAndDelete(contactId);
-}
+const addContact = async (data) => {
+    return await Contact.create(data);
+};
 
-export const addContact = (data) => Contact.create(data);
+const getContactByFilter = async (filter) => {
+    return await Contact.findOne(filter);
+};
 
-export const updateContactById = (id, data) =>
-    Contact.findByIdAndUpdate(id, data);
+const updateContactByFilter = async (filter, data) => {
+    return await Contact.findOneAndUpdate(filter, data, { new: true });
+};
 
-export const updateStatus = (id, data) =>
-    Contact.findByIdAndUpdate(id, data, { new: true, runValidators: false });
+const removeContactByFilter = async (filter) => {
+    return await Contact.findOneAndDelete(filter);
+};
+
+const updateContactStatusByFilter = async (filter, data) => {
+    return await Contact.findOneAndUpdate(filter, data, { new: true });
+};
+
+export default {
+    listContacts,
+    countContacts,
+    addContact,
+    getContactByFilter,
+    updateContactByFilter,
+    removeContactByFilter,
+    updateContactStatusByFilter,
+};
