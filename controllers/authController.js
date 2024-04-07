@@ -7,18 +7,12 @@ import HttpError from '../helpers/HttpError.js';
 
 const { JWT_SECRET } = process.env;
 
-const signup = async (req, res) => {
+const singup = async (req, res) => {
     const { email, password } = req.body;
-
-    const existingUser = await authServices.findUser({ email });
-    if (existingUser) {
-        throw new HttpError(409, 'Email in use');
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = await authServices.signup({ ...req.body, password: hashedPassword });
-
+    const user = await authServices.findUser({ email });
+    if (user) throw HttpError(409, 'Email in use');
+    const hashPassword = await bcrypt.hash(password, 10);
+    const newUser = await authServices.singup({ ...req.body, password: hashPassword });
     res.status(201).json({
         user: {
             email: newUser.email,
@@ -27,19 +21,16 @@ const signup = async (req, res) => {
     });
 };
 
-const signin = async (req, res) => {
+const singin = async (req, res) => {
     const { email, password } = req.body;
-
     const user = await authServices.findUser({ email });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-        throw new HttpError(401, 'Email or password is wrong');
-    }
-
-    const payload = { id: user._id };
+    if (!user) throw HttpError(401, 'Email or password is wrong');
+    const passwordCompare = await bcrypt.compare(password, user.password);
+    if (!passwordCompare) throw HttpError(401, 'Email or password is wrong');
+    const { _id: id } = user;
+    const payload = { id };
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '12h' });
-
-    await authServices.updateUser({ _id: user._id }, { token });
-
+    await authServices.updateUser({ _id: id }, { token });
     res.json({
         token,
         user: {
@@ -49,23 +40,20 @@ const signin = async (req, res) => {
     });
 };
 
-const getCurrentUser = async (req, res) => {
+const getCurrent = async (req, res) => {
     const { email, subscription } = req.user;
-
     res.json({ email, subscription });
 };
 
 const logout = async (req, res) => {
     const { _id } = req.user;
-
     await authServices.updateUser({ _id }, { token: null });
-
     res.status(204).send();
 };
 
 export default {
-    signup: ctrlWrapper(signup),
-    signin: ctrlWrapper(signin),
-    getCurrentUser: ctrlWrapper(getCurrentUser),
+    singup: ctrlWrapper(singup),
+    singin: ctrlWrapper(singin),
+    getCurrent: ctrlWrapper(getCurrent),
     logout: ctrlWrapper(logout),
 };

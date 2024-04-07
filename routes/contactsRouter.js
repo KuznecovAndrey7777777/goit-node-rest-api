@@ -8,18 +8,18 @@ import authenticate from '../middlewares/authenticate.js';
 
 const contactsRouter = express.Router();
 
-const ensureAuthenticated = authenticate;
-const validateContactBody = validateBody(addContactSchema);
-const validateUpdateContactBody = validateBody(updateContactSchema);
-const validateUpdateContactStatusBody = validateBody(updateContactStatusSchema);
-
-contactsRouter.use(ensureAuthenticated);
+contactsRouter.use(authenticate);
 
 contactsRouter.get('/', contactsControllers.getAll);
-contactsRouter.post('/', validateContactBody, contactsControllers.addContact);
+contactsRouter.post('/', validateBody(addContactSchema), contactsControllers.addContact);
 contactsRouter.get('/:id', isValidId, contactsControllers.getById);
-contactsRouter.put('/:id', isValidId, validateUpdateContactBody, contactsControllers.updateContact);
+contactsRouter.put('/:id', isValidId, validateBody(updateContactSchema), contactsControllers.updateContact);
 contactsRouter.delete('/:id', isValidId, contactsControllers.deleteContact);
-contactsRouter.patch('/:id/favorite', isValidId, validateUpdateContactStatusBody, contactsControllers.updateContactStatus);
+contactsRouter.patch(
+    '/:id/favorite',
+    isValidId,
+    validateBody(updateContactStatusSchema),
+    contactsControllers.updateContactStatus
+);
 
 export default contactsRouter;

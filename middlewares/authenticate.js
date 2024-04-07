@@ -6,19 +6,19 @@ import authServices from '../services/authServices.js';
 const { JWT_SECRET } = process.env;
 
 const authenticate = async (req, res, next) => {
+    const { authorization } = req.headers;
+    if (!authorization) return next(HttpError(401, 'Not authorized'));
+    const [bearer, token] = authorization.split(' ');
+    if (bearer !== 'Bearer') return next(HttpError(401, 'Not authorized'));
     try {
-        const { authorization } = req.headers;
-        if (!authorization) throw new HttpError(401, 'Not authorized');
-        const [bearer, token] = authorization.split(' ');
-        if (bearer !== 'Bearer' || !token) throw new HttpError(401, 'Invalid token format');
-        const decodedToken = jwt.verify(token, JWT_SECRET);
-        const { id } = decodedToken;
+        const { id } = jwt.verify(token, JWT_SECRET);
         const user = await authServices.findUser({ _id: id });
-        if (!user || !user.token) throw new HttpError(401, 'User not found or token expired');
+        if (!user) return next(HttpError(401, 'User not found'));
+        if (!user.token) return next(HttpError(401, 'Not authorized'));
         req.user = user;
         next();
     } catch (error) {
-        next(error);
+        next(HttpError(401, 'Not authorized'));
     }
 };
 

@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 
-import { emailRegexp } from '../constants/constants.js';
-import { handleSaveError } from './hooks.js';
+import { emailRegexp, phoneRegexp } from '../constants/constants.js';
+import { handleSaveError, setUpdateSetting } from './hooks.js';
 
 const contactSchema = new Schema(
     {
@@ -19,6 +19,7 @@ const contactSchema = new Schema(
         phone: {
             type: String,
             unique: true,
+            match: phoneRegexp,
             required: [true, 'Set phone for contact'],
         },
         favorite: {
@@ -35,7 +36,11 @@ const contactSchema = new Schema(
     { versionKey: false, timestamps: true }
 );
 
-contactSchema.post(['save', 'findOneAndUpdate'], handleSaveError);
+contactSchema.pre('findOneAndUpdate', setUpdateSetting);
+
+contactSchema.post('save', handleSaveError);
+
+contactSchema.post('findOneAndUpdate', handleSaveError);
 
 const Contact = model('contact', contactSchema);
 

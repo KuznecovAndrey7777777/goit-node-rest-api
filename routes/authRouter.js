@@ -7,12 +7,9 @@ import authenticate from '../middlewares/authenticate.js';
 
 const authRouter = express.Router();
 
-const validateSignupSignin = validateBody(userSingupSinginSchema);
-const ensureAuthenticated = authenticate;
-
-authRouter.post('/register', validateSignupSignin, authControllers.signup);
-authRouter.post('/login', validateSignupSignin, authControllers.signin);
-authRouter.get('/current', ensureAuthenticated, authControllers.getCurrent);
-authRouter.post('/logout', ensureAuthenticated, authControllers.logout);
+authRouter.post('/register', validateBody(userSingupSinginSchema), authControllers.singup);
+authRouter.post('/login', validateBody(userSingupSinginSchema), authControllers.singin);
+authRouter.get('/current', authenticate, authControllers.getCurrent);
+authRouter.post('/logout', authenticate, authControllers.logout);
 
 export default authRouter;
