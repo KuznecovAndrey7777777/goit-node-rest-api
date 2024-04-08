@@ -1,19 +1,23 @@
-import Joi from "joi";
+import Joi from 'joi';
 
-export const createContactSchema = Joi.object({
+import { emailRegexp, phoneRegexp } from '../constants/constants.js';
+
+export const addContactSchema = Joi.object({
     name: Joi.string().required(),
-    email: Joi.string().required(),
-    phone: Joi.string().required(),
-    favorite: Joi.boolean(),
+    email: Joi.string().pattern(emailRegexp).required(),
+    phone: Joi.string().pattern(phoneRegexp).required(),
+    favorite: Joi.boolean().default(false),
 });
 
 export const updateContactSchema = Joi.object({
     name: Joi.string(),
-    email: Joi.string(),
-    phone: Joi.string(),
+    email: Joi.string().pattern(emailRegexp),
+    phone: Joi.string().pattern(phoneRegexp),
     favorite: Joi.boolean(),
-}).or('name', 'email', 'phone');
+})
+    .min(1)
+    .message('Body must have at least one field');
 
-export const updateStatusSchema = Joi.object({
+export const updateContactStatusSchema = Joi.object({
     favorite: Joi.boolean().required(),
 });
