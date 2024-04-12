@@ -20,6 +20,10 @@ const userSchema = new Schema(
             enum: ['starter', 'pro', 'business'],
             default: 'starter',
         },
+        avatarURL: {
+            type: String,
+            require: true,
+        },
         token: {
             type: String,
             default: null,
@@ -29,8 +33,11 @@ const userSchema = new Schema(
 );
 
 userSchema.pre('findOneAndUpdate', setUpdateSetting);
+
 userSchema.post('save', handleSaveError);
+
 userSchema.post('findOneAndUpdate', handleSaveError);
+
 const User = model('user', userSchema);
 
 export default User;
