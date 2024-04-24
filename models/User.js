@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
-
 import { handleSaveError, setUpdateSetting } from './hooks.js';
+
 import { emailRegexp } from '../constants/constants.js';
 
 const userSchema = new Schema(
@@ -25,6 +25,14 @@ const userSchema = new Schema(
             require: true,
         },
         token: {
+            type: String,
+            default: null,
+        },
+        verify: {
+            type: Boolean,
+            default: false,
+        },
+        verificationToken: {
             type: String,
             default: null,
         },
